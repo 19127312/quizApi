@@ -6,7 +6,7 @@ exports.register = async (username, email, password) => {
     const passwordHash = await bcrypt.hash(password, 10);
     return await userModel.create({
         fullName: username,
-        emailAddress: email,
+        email: email,
         password: passwordHash,
     });
 };
@@ -20,5 +20,5 @@ exports.findByUsername = (username) => {
 };
 
 exports.findByEmail = (email) => {
-    return userModel.findOne({ emailAddress: email, }).lean();
+    return userModel.findOne({ email: email, }).lean();
 };
