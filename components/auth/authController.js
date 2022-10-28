@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
             });
         }
         else {
-            res.status(400).json({ error: "Email already been used" });
+            res.status(400).json({ error: "This email address is already used" });
         }
     } catch (error) {
 
@@ -40,7 +40,7 @@ exports.login = async (req, res) => {
                     message: "Login successfully!",
                 });
             } else {
-                res.status(400).json({ error: "Wrong password" });
+                res.status(400).json({ error: "The password you entered is incorrect" });
             }
         } else {
             res.status(400).json({ error: "User not found" });
