@@ -2,27 +2,22 @@ const userService = require("./userService");
 const bcrypt = require("bcrypt");
 
 exports.register = async (req, res) => {
-    const { fullName, email, password, confirmPassword } = req.body;
 
-    const checkingUsername = await userService.findByUsername(fullName);
+    const { fullName, email, password, type } = req.body;
+
     const checkingUserEmail = await userService.findByEmail(email);
     try {
-        if (!checkingUserEmail && !checkingUsername) {
-            if (password === confirmPassword) {
+        if (!checkingUserEmail) {
 
-                const user = await userService.register(fullName, email, password);
-                res.json({
-                    user,
-                    message: "User created successfully!"
-                });
-            }
-            else {
-                res.status(400).json({ error: "Password and confirm password are not the same" });
-            }
+
+            const user = await userService.register(fullName, email, password, type);
+            res.json({
+                user,
+                message: "User created successfully!"
+            });
         }
         else {
-            res.status(400).json({ error: "Duplicated User" });
-
+            res.status(400).json({ error: "Email already been used" });
         }
     } catch (error) {
 
@@ -32,9 +27,9 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    const { fullName, password } = req.body;
-    console.log(fullName, password);
-    const user = await userService.findByUsername(fullName);
+    const { email, password } = req.body;
+
+    const user = await userService.findByEmail(email);
     try {
         if (user) {
             const isMatch = await bcrypt.compare(password, user.password);
