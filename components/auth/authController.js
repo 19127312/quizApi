@@ -11,6 +11,7 @@ exports.register = async (req, res) => {
 
 
             const user = await userService.register(fullName, email, password, type);
+            delete user.password;
             res.json({
                 user,
                 message: "User created successfully!"
@@ -34,7 +35,7 @@ exports.login = async (req, res) => {
         if (user) {
             const isMatch = await bcrypt.compare(password, user.password);
             if (isMatch) {
-
+                delete user.password;
                 res.json({
                     user,
                     message: "Login successfully!",
