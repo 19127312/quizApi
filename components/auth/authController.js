@@ -1,4 +1,4 @@
-const userService = require("./userService");
+const userService = require("./authService");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
@@ -10,11 +10,17 @@ exports.register = async (req, res) => {
         if (!checkingUserEmail) {
 
 
-            const user = await userService.register(fullName, email, password, type);
-            delete user.password;
+            const { _id } = await userService.register(fullName, email, password, type);
+            const accessToken = userService.generateAccessToken({ email, _id, fullName, type });
 
             res.json({
-                user,
+                user: {
+                    email,
+                    _id,
+                    fullName,
+                    type,
+                },
+                accessToken,
                 message: "User created successfully!"
             });
         }
@@ -44,25 +50,7 @@ exports.loginSuccess = async (req, res) => {
     });
     //Axios interceptors frontend, add token to header, then send request to backend with token use with passport-jwt
 
-    // const user = await userService.findByEmail(email);
-    // try {
-    //     if (user) {
-    //         const isMatch = await bcrypt.compare(password, user.password);
-    //         if (isMatch) {
-    //             delete user.password;
-    //             res.json({
-    //                 user,
-    //                 message: "Login successfully!",
-    //             });
-    //         } else {
-    //             res.status(400).json({ error: "The password you entered is incorrect" });
-    //         }
-    //     } else {
-    //         res.status(400).json({ error: "User not found" });
-    //     }
-    // } catch (error) {
-    //     res.status(400).json({ error: error.message ?? "Unknow Error" });
-    // }
+
 
 }
 
