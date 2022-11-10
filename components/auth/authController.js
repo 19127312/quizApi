@@ -8,11 +8,8 @@ exports.register = async (req, res) => {
     const checkingUserEmail = await userService.findByEmail(email);
     try {
         if (!checkingUserEmail) {
-
-
             const { _id } = await userService.register(fullName, email, password, type);
             const accessToken = userService.generateAccessToken({ email, _id, fullName, type });
-
             res.json({
                 user: {
                     email,
